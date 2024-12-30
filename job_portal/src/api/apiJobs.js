@@ -4,8 +4,8 @@ import supabaseClient from "@/utils/supabase";
 export async function getJobs(token, { location, company_id, searchQuery }) {
   const supabase = await supabaseClient(token);
   let query = supabase
-    .from("jobs")
-    .select("*, saved: saved_jobs(id), company: companies(name,logo_url)");
+  .from("jobs")
+  .select("*, saved: saved_jobs!saved_jobs_job_id_fkey(id), company: companies(name,logo_url)");
 
   if (location) {
     query = query.eq("location", location);
@@ -33,8 +33,8 @@ export async function getJobs(token, { location, company_id, searchQuery }) {
 export async function getSavedJobs(token) {
   const supabase = await supabaseClient(token);
   const { data, error } = await supabase
-    .from("saved_jobs")
-    .select("*, job: jobs(*, company: companies(name,logo_url))");
+  .from("saved_jobs")
+  .select("*, job: jobs!saved_jobs_job_id_fkey(*, company: companies(name,logo_url))");
 
   if (error) {
     console.error("Error fetching Saved Jobs:", error);
